@@ -8,15 +8,22 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/smallpaes/go-blog-backend/global"
+	"github.com/smallpaes/go-blog-backend/internal/model"
 	"github.com/smallpaes/go-blog-backend/internal/routers"
 	"github.com/smallpaes/go-blog-backend/pkg/setting"
 )
 
-// init config: map setting to app struct
 func init() {
+	// init config: map setting to app struct
 	err := setupSetting()
 	if err != nil {
 		log.Fatalf("Init setup err: %v", err)
+	}
+
+	// init DBEngine
+	err = setupDBEngine()
+	if err != nil {
+		log.Fatalf("Init setupDBEngine err: %v", err)
 	}
 }
 
@@ -65,5 +72,14 @@ func setupSetting() error {
 
 	global.ServerSetting.ReadTimeout *= time.Second
 	global.ServerSetting.WriteTimeout *= time.Second
+	return nil
+}
+
+func setupDBEngine() error {
+	var err error
+	global.DBEngine, err = model.NewDBEngine(global.DatabaseSetting)
+	if err != nil {
+		return err
+	}
 	return nil
 }
