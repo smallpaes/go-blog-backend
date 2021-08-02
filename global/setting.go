@@ -1,6 +1,7 @@
 package global
 
 import (
+	"github.com/smallpaes/go-blog-backend/pkg/logger"
 	"github.com/smallpaes/go-blog-backend/pkg/setting"
 )
 
@@ -10,4 +11,5 @@ var (
 	ServerSetting   *setting.ServerSettingS
 	AppSetting      *setting.AppSettingS
 	DatabaseSetting *setting.DatabaseSettingS
+	Logger          *logger.Logger
 )

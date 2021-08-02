@@ -10,7 +10,9 @@ import (
 	"github.com/smallpaes/go-blog-backend/global"
 	"github.com/smallpaes/go-blog-backend/internal/model"
 	"github.com/smallpaes/go-blog-backend/internal/routers"
+	"github.com/smallpaes/go-blog-backend/pkg/logger"
 	"github.com/smallpaes/go-blog-backend/pkg/setting"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 func init() {
@@ -25,12 +27,17 @@ func init() {
 	if err != nil {
 		log.Fatalf("Init setupDBEngine err: %v", err)
 	}
+
+	// init logger
+	err = setupLogger()
+	if err != nil {
+		log.Fatalf("Init setupLogger err: %v", err)
+	}
 }
 
 func main() {
 	// set gin mode for execution
 	gin.SetMode(global.ServerSetting.RunMode)
-
 	router := routers.NewRouter()
 
 	// create custom server
@@ -81,5 +88,16 @@ func setupDBEngine() error {
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func setupLogger() error {
+	fileName := global.AppSetting.LogSavePath + "/" + global.AppSetting.LogFileName + global.AppSetting.LogFileExt
+	global.Logger = logger.NewLogger(&lumberjack.Logger{
+		Filename:  fileName,
+		MaxSize:   600,
+		MaxAge:    10,
+		LocalTime: true,
+	}, "", log.LstdFlags).WithCaller(2)
 	return nil
 }

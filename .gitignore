@@ -9,3 +9,6 @@ configs/config.yaml
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+#log
+storage/logs
