@@ -1,6 +1,9 @@
 package errcode
 
-import "fmt"
+import (
+	"fmt"
+	"net/http"
+)
 
 // Define error response template
 type Error struct {
@@ -54,8 +57,24 @@ func (e *Error) WithDetails(details ...string) *Error {
 	return &newError
 }
 
-// func (e *Error) StatusCode() int {
-// 	switch e.Code() {
-//   case
-// 	}
-// }
+func (e *Error) StatusCode() int {
+	switch e.Code() {
+	case Success.Code():
+		return http.StatusOK
+	case ServerError.Code():
+		return http.StatusInternalServerError
+	case InvalidParams.Code():
+		return http.StatusBadRequest
+	case UnauthorizedAuthNotExist.Code():
+		fallthrough
+	case UnauthorizedTokenError.Code():
+		fallthrough
+	case UnauthorizedTokenGenerate.Code():
+		fallthrough
+	case UnauthorizedTokenTimeout.Code():
+		return http.StatusUnauthorized
+	case TooManyRequest.Code():
+		return http.StatusTooManyRequests
+	}
+	return http.StatusInternalServerError
+}
