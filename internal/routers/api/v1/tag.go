@@ -14,7 +14,7 @@ func NewTag() Tag {
 // @Param state query int false "State" Enum(0, 1) default(1)
 // @Param page query int false "Page number"
 // @Param page_size query int false "Amount per page"
-// @Success 200 {object} model.Tag
+// @Success 200 {object} model.TagSwagger "Success"
 // @Failure 400 {object} errcode.Error "Request error"
 // @Failure 500 {object} errcode.Error "Internal error"
 // @Router /api/vi/tags [get]
