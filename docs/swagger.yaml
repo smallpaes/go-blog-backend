@@ -1,0 +1,422 @@
+definitions:
+  app.Pager:
+    properties:
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total_rows:
+        type: integer
+    type: object
+  errcode.Error:
+    type: object
+  model.Article:
+    properties:
+      content:
+        type: string
+      cover_image_url:
+        type: string
+      created_by:
+        type: string
+      created_on:
+        type: integer
+      deleted_on:
+        type: integer
+      desc:
+        type: string
+      id:
+        type: integer
+      is_del:
+        type: integer
+      modified_by:
+        type: string
+      modified_on:
+        type: integer
+      state:
+        type: integer
+      title:
+        type: string
+    type: object
+  model.ArticleSwagger:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/model.Article'
+        type: array
+      pager:
+        $ref: '#/definitions/app.Pager'
+    type: object
+  model.Tag:
+    properties:
+      created_by:
+        type: string
+      created_on:
+        type: integer
+      deleted_on:
+        type: integer
+      id:
+        type: integer
+      is_del:
+        type: integer
+      modified_by:
+        type: string
+      modified_on:
+        type: integer
+      name:
+        type: string
+      state:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: A backend server for blog app
+  title: Blog Backend
+  version: "1.0"
+paths:
+  /api/v1/articles:
+    get:
+      parameters:
+      - description: Article name
+        in: query
+        name: name
+        type: string
+      - description: Tag ID
+        in: query
+        name: tag_id
+        type: integer
+      - description: State
+        in: query
+        name: state
+        type: integer
+      - description: Amount of articles per page
+        in: query
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of articles
+          schema:
+            $ref: '#/definitions/model.ArticleSwagger'
+        "400":
+          description: Request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: Get multiple articles
+    post:
+      parameters:
+      - description: Tag ID
+        in: body
+        name: tag_id
+        required: true
+        schema:
+          type: string
+      - description: Article title
+        in: body
+        name: title
+        required: true
+        schema:
+          type: string
+      - description: Article brief description
+        in: body
+        name: desc
+        schema:
+          type: string
+      - description: Cover image source
+        in: body
+        name: cover_image_url
+        required: true
+        schema:
+          type: string
+      - description: Article content
+        in: body
+        name: content
+        required: true
+        schema:
+          type: string
+      - description: Creator
+        in: body
+        name: created_by
+        required: true
+        schema:
+          type: integer
+      - description: State
+        in: body
+        name: state
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Article'
+        "400":
+          description: Request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: Create an article
+  /api/v1/articles/{id}:
+    delete:
+      parameters:
+      - description: Article ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: 内部错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: Delete an article
+    get:
+      parameters:
+      - description: Post ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/model.Article'
+        "400":
+          description: Request Error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: Internal Error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: Get single article
+    put:
+      parameters:
+      - description: Article ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Tag ID
+        in: body
+        name: tag_id
+        schema:
+          type: string
+      - description: Article title
+        in: body
+        name: title
+        schema:
+          type: string
+      - description: Article brief description
+        in: body
+        name: desc
+        schema:
+          type: string
+      - description: Cover image source
+        in: body
+        name: cover_image_url
+        schema:
+          type: string
+      - description: Article content
+        in: body
+        name: content
+        schema:
+          type: string
+      - description: Modifier
+        in: body
+        name: modified_by
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/model.Article'
+        "400":
+          description: 请求错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: 内部错误
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: Update an article
+  /api/v1/tags:
+    post:
+      parameters:
+      - description: Tag name
+        in: body
+        maxLength: 100
+        minLength: 3
+        name: name
+        required: true
+        schema:
+          type: string
+      - default: 1
+        description: State
+        enum:
+        - 0
+        - 1
+        in: body
+        name: state
+        schema:
+          type: integer
+      - description: Creator
+        in: body
+        maxLength: 100
+        minLength: 3
+        name: created_by
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/model.Tag'
+        "400":
+          description: Request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: Add new tag
+  /api/v1/tags/{id}:
+    delete:
+      parameters:
+      - description: Tag ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: string
+        "400":
+          description: Request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: Delete tag
+    put:
+      parameters:
+      - description: Tag ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Tag name
+        in: body
+        maxLength: 100
+        minLength: 3
+        name: name
+        schema:
+          type: string
+      - default: 1
+        description: State
+        enum:
+        - 0
+        - 1
+        in: body
+        name: state
+        schema:
+          type: integer
+      - description: Modifier
+        in: body
+        maxLength: 100
+        minLength: 3
+        name: modified_by
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/model.Tag'
+        "400":
+          description: Request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: Update tag
+  /api/vi/tags:
+    get:
+      parameters:
+      - description: Tag name
+        in: query
+        maxLength: 10
+        name: name
+        type: string
+      - default: 1
+        description: State
+        in: query
+        name: state
+        type: integer
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Amount per page
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Tag'
+        "400":
+          description: Request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: Get multiple tags
+swagger: "2.0"

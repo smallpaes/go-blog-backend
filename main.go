@@ -35,6 +35,9 @@ func init() {
 	}
 }
 
+// @title Blog Backend
+// @version 1.0
+// @description A backend server for blog app
 func main() {
 	// set gin mode for execution
 	gin.SetMode(global.ServerSetting.RunMode)
