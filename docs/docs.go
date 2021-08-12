@@ -324,6 +324,60 @@ var doc = `{
             }
         },
         "/api/v1/tags": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get multiple tags",
+                "parameters": [
+                    {
+                        "maxLength": 10,
+                        "type": "string",
+                        "description": "Tag name",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "State",
+                        "name": "state",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Amount per page",
+                        "name": "page_size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/model.TagSwagger"
+                        }
+                    },
+                    "400": {
+                        "description": "Request error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal error",
+                        "schema": {
+                            "$ref": "#/definitions/errcode.Error"
+                        }
+                    }
+                }
+            },
             "post": {
                 "produces": [
                     "application/json"
@@ -493,62 +547,6 @@ var doc = `{
                     }
                 }
             }
-        },
-        "/api/vi/tags": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Get multiple tags",
-                "parameters": [
-                    {
-                        "maxLength": 10,
-                        "type": "string",
-                        "description": "Tag name",
-                        "name": "name",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "default": 1,
-                        "description": "State",
-                        "name": "state",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Page number",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Amount per page",
-                        "name": "page_size",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.Tag"
-                        }
-                    },
-                    "400": {
-                        "description": "Request error",
-                        "schema": {
-                            "$ref": "#/definitions/errcode.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal error",
-                        "schema": {
-                            "$ref": "#/definitions/errcode.Error"
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
@@ -653,6 +651,20 @@ var doc = `{
                 },
                 "state": {
                     "type": "string"
+                }
+            }
+        },
+        "model.TagSwagger": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Tag"
+                    }
+                },
+                "pager": {
+                    "$ref": "#/definitions/app.Pager"
                 }
             }
         }

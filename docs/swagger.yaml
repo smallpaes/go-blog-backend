@@ -67,6 +67,15 @@ definitions:
       state:
         type: string
     type: object
+  model.TagSwagger:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/model.Tag'
+        type: array
+      pager:
+        $ref: '#/definitions/app.Pager'
+    type: object
 info:
   contact: {}
   description: A backend server for blog app
@@ -268,6 +277,42 @@ paths:
             $ref: '#/definitions/errcode.Error'
       summary: Update an article
   /api/v1/tags:
+    get:
+      parameters:
+      - description: Tag name
+        in: query
+        maxLength: 10
+        name: name
+        type: string
+      - default: 1
+        description: State
+        in: query
+        name: state
+        type: integer
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Amount per page
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/model.TagSwagger'
+        "400":
+          description: Request error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/errcode.Error'
+      summary: Get multiple tags
     post:
       parameters:
       - description: Tag name
@@ -382,41 +427,4 @@ paths:
           schema:
             $ref: '#/definitions/errcode.Error'
       summary: Update tag
-  /api/vi/tags:
-    get:
-      parameters:
-      - description: Tag name
-        in: query
-        maxLength: 10
-        name: name
-        type: string
-      - default: 1
-        description: State
-        in: query
-        name: state
-        type: integer
-      - description: Page number
-        in: query
-        name: page
-        type: integer
-      - description: Amount per page
-        in: query
-        name: page_size
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.Tag'
-        "400":
-          description: Request error
-          schema:
-            $ref: '#/definitions/errcode.Error'
-        "500":
-          description: Internal error
-          schema:
-            $ref: '#/definitions/errcode.Error'
-      summary: Get multiple tags
 swagger: "2.0"

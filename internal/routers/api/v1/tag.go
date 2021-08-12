@@ -1,6 +1,13 @@
 package v1
 
-import "github.com/gin-gonic/gin"
+import (
+	"fmt"
+
+	"github.com/gin-gonic/gin"
+	"github.com/smallpaes/go-blog-backend/global"
+	"github.com/smallpaes/go-blog-backend/pkg/app"
+	"github.com/smallpaes/go-blog-backend/pkg/errcode"
+)
 
 type Tag struct{}
 
@@ -17,9 +24,24 @@ func NewTag() Tag {
 // @Success 200 {object} model.TagSwagger "Success"
 // @Failure 400 {object} errcode.Error "Request error"
 // @Failure 500 {object} errcode.Error "Internal error"
-// @Router /api/vi/tags [get]
+// @Router /api/v1/tags [get]
 func (t Tag) List(c *gin.Context) {
+	fmt.Println("jijo")
+	param := struct {
+		Name  string `json:"name" binding:"max=100"`
+		State uint8  `json:"state" default:"1" binding:"oneof=0 1"`
+	}{}
 
+	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &param)
+	if !valid {
+		global.Logger.Errorf("app.BindAndValid errs: %v", errs)
+		errRsp := errcode.InvalidParams.WithDetails(errs.Errors()...)
+		response.ToErrorResponse(errRsp)
+		return
+	}
+
+	response.ToResponse(gin.H{})
 }
 
 // @Summary Add new tag

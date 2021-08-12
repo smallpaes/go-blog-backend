@@ -3,6 +3,7 @@ package routers
 import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/smallpaes/go-blog-backend/docs"
+	"github.com/smallpaes/go-blog-backend/internal/middleware"
 	v1 "github.com/smallpaes/go-blog-backend/internal/routers/api/v1"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -11,6 +12,7 @@ import (
 func NewRouter() *gin.Engine {
 	// create a gin router with default middlewares
 	r := gin.Default()
+	r.Use(middleware.Translations())
 
 	article := v1.NewArticle()
 	tag := v1.NewTag()
