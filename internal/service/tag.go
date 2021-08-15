@@ -30,3 +30,7 @@ type DeleteTagRequest struct {
 func (svc *Service) CreateTag(param *CreateTagRequest) error {
 	return svc.dao.CreateTag(param.Name, param.State, param.CreatedBy)
 }
+
+func (svc *Service) UpdateTag(param *UpdateTagRequest) error {
+	return svc.dao.UpdateTag(param.ID, param.Name, param.State, param.ModifiedBy)
+}

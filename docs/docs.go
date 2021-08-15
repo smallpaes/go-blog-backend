@@ -421,50 +421,21 @@ var doc = `{
         },
         "/api/v1/tags/{id}": {
             "put": {
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "summary": "Update tag",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "Tag ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "maxLength": 100,
-                        "minLength": 3,
-                        "description": "Tag name",
-                        "name": "name",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "enum": [
-                            0,
-                            1
-                        ],
-                        "default": 1,
-                        "description": "State",
-                        "name": "state",
-                        "in": "body",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "maxLength": 100,
-                        "minLength": 3,
-                        "description": "Modifier",
-                        "name": "modified_by",
+                        "description": "Update Tag info",
+                        "name": "Body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/service.UpdateTagRequest"
                         }
                     }
                 ],
@@ -653,6 +624,29 @@ var doc = `{
             ],
             "properties": {
                 "created_by": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "integer",
+                    "default": 1
+                }
+            }
+        },
+        "service.UpdateTagRequest": {
+            "type": "object",
+            "required": [
+                "id",
+                "modified_by",
+                "state"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "modified_by": {
                     "type": "string"
                 },
                 "name": {

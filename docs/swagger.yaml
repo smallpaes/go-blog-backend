@@ -89,6 +89,22 @@ definitions:
     - created_by
     - name
     type: object
+  service.UpdateTagRequest:
+    properties:
+      id:
+        type: integer
+      modified_by:
+        type: string
+      name:
+        type: string
+      state:
+        default: 1
+        type: integer
+    required:
+    - id
+    - modified_by
+    - state
+    type: object
 info:
   contact: {}
   description: A backend server for blog app
@@ -377,36 +393,15 @@ paths:
             $ref: '#/definitions/errcode.Error'
       summary: Delete tag
     put:
+      consumes:
+      - application/json
       parameters:
-      - description: Tag ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Tag name
+      - description: Update Tag info
         in: body
-        maxLength: 100
-        minLength: 3
-        name: name
-        schema:
-          type: string
-      - default: 1
-        description: State
-        enum:
-        - 0
-        - 1
-        in: body
-        name: state
-        schema:
-          type: integer
-      - description: Modifier
-        in: body
-        maxLength: 100
-        minLength: 3
-        name: modified_by
+        name: Body
         required: true
         schema:
-          type: string
+          $ref: '#/definitions/service.UpdateTagRequest'
       produces:
       - application/json
       responses:

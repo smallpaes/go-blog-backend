@@ -46,6 +46,7 @@ func NewDBEngine(databaseSetting *setting.DatabaseSettingS) (*gorm.DB, error) {
 	}
 	fmt.Println("init")
 	db.Callback().Create().Before("gorm:create").Register("update_time_stamp", updateTimeStampForCreateCallback)
+	db.Callback().Update().Before("gorm:update").Register("update_time_stamp", updateTimeStampForUpdateCallback)
 
 	sqlDB, err := db.DB()
 	if err != nil {
@@ -73,6 +74,14 @@ func updateTimeStampForCreateCallback(db *gorm.DB) {
 			fmt.Println(modifiedTimeField, db.Statement.ReflectValue)
 			_ = modifiedTimeField.Set(db.Statement.ReflectValue, nowTime)
 		}
+	}
+}
+
+func updateTimeStampForUpdateCallback(db *gorm.DB) {
+	if db.Error == nil {
+		nowTime := time.Now().Unix()
+		modifiedTimeField := db.Statement.Schema.LookUpField("ModifiedOn")
+		_ = modifiedTimeField.Set(db.Statement.ReflectValue, nowTime)
 	}
 }
 

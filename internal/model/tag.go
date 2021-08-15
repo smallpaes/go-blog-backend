@@ -26,9 +26,9 @@ func (t Tag) Create(db *gorm.DB) error {
 }
 
 // Update a tag
-func (t Tag) Update(db *gorm.DB, values interface{}) error {
+func (t Tag) Update(db *gorm.DB) error {
 	db = db.Model(&t).Where("id = ? AND is_del = ?", t.ID, 0)
-	return db.Updates(values).Error
+	return db.Updates(t).Error
 }
 
 // delete a tag
