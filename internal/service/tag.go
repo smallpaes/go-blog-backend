@@ -26,3 +26,7 @@ type UpdateTagRequest struct {
 type DeleteTagRequest struct {
 	ID uint32 `json:"id" binding:"required,gte=1"`
 }
+
+func (svc *Service) CreateTag(param *CreateTagRequest) error {
+	return svc.dao.CreateTag(param.Name, param.State, param.CreatedBy)
+}

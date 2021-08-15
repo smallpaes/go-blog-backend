@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/smallpaes/go-blog-backend/global"
+	"github.com/smallpaes/go-blog-backend/internal/service"
 	"github.com/smallpaes/go-blog-backend/pkg/app"
 	"github.com/smallpaes/go-blog-backend/pkg/errcode"
 )
@@ -46,15 +47,32 @@ func (t Tag) List(c *gin.Context) {
 
 // @Summary Add new tag
 // @Produce json
-// @Param name body string true "Tag name" minlength(3) maxlength(100)
-// @Param state body int false "State" Enums(0, 1) default(1)
-// @Param created_by body string true "Creator" minlength(3) maxlength(100)
+// @Accept json
+// @Param Body body service.CreateTagRequest true "Tag info"
 // @Success 200 {object} model.Tag "Success"
 // @Failure 400 {object} errcode.Error "Request error"
 // @Failure 500 {object} errcode.Error "Internal error"
 // @Router /api/v1/tags [post]
 func (t Tag) Create(c *gin.Context) {
+	param := service.CreateTagRequest{}
+	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &param)
+	if !valid {
+		global.Logger.Errorf("app.BindAndValid errs: %v", errs)
+		errRsp := errcode.InvalidParams.WithDetails(errs.Errors()...)
+		response.ToErrorResponse(errRsp)
+		return
+	}
 
+	svc := service.New(c.Request.Context())
+	err := svc.CreateTag(&param)
+	if err != nil {
+		global.Logger.Errorf("svc.CreateTag err: %v", err)
+		response.ToErrorResponse(errcode.ErrorCreateTagFail)
+		return
+	}
+
+	response.ToResponse(gin.H{})
 }
 
 // @Summary Update tag

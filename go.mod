@@ -16,6 +16,7 @@ require (
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-playground/validator/v10 v10.8.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/jinzhu/gorm v1.9.16 // indirect
 	github.com/json-iterator/go v1.1.11 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-isatty v0.0.13 // indirect

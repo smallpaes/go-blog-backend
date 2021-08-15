@@ -379,44 +379,21 @@ var doc = `{
                 }
             },
             "post": {
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "summary": "Add new tag",
                 "parameters": [
                     {
-                        "maxLength": 100,
-                        "minLength": 3,
-                        "description": "Tag name",
-                        "name": "name",
+                        "description": "Tag info",
+                        "name": "Body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "enum": [
-                            0,
-                            1
-                        ],
-                        "default": 1,
-                        "description": "State",
-                        "name": "state",
-                        "in": "body",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "maxLength": 100,
-                        "minLength": 3,
-                        "description": "Creator",
-                        "name": "created_by",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/service.CreateTagRequest"
                         }
                     }
                 ],
@@ -650,7 +627,7 @@ var doc = `{
                     "type": "string"
                 },
                 "state": {
-                    "type": "string"
+                    "type": "integer"
                 }
             }
         },
@@ -665,6 +642,25 @@ var doc = `{
                 },
                 "pager": {
                     "$ref": "#/definitions/app.Pager"
+                }
+            }
+        },
+        "service.CreateTagRequest": {
+            "type": "object",
+            "required": [
+                "created_by",
+                "name"
+            ],
+            "properties": {
+                "created_by": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "integer",
+                    "default": 1
                 }
             }
         }

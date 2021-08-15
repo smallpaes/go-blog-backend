@@ -65,7 +65,7 @@ definitions:
       name:
         type: string
       state:
-        type: string
+        type: integer
     type: object
   model.TagSwagger:
     properties:
@@ -75,6 +75,19 @@ definitions:
         type: array
       pager:
         $ref: '#/definitions/app.Pager'
+    type: object
+  service.CreateTagRequest:
+    properties:
+      created_by:
+        type: string
+      name:
+        type: string
+      state:
+        default: 1
+        type: integer
+    required:
+    - created_by
+    - name
     type: object
 info:
   contact: {}
@@ -314,32 +327,15 @@ paths:
             $ref: '#/definitions/errcode.Error'
       summary: Get multiple tags
     post:
+      consumes:
+      - application/json
       parameters:
-      - description: Tag name
+      - description: Tag info
         in: body
-        maxLength: 100
-        minLength: 3
-        name: name
+        name: Body
         required: true
         schema:
-          type: string
-      - default: 1
-        description: State
-        enum:
-        - 0
-        - 1
-        in: body
-        name: state
-        schema:
-          type: integer
-      - description: Creator
-        in: body
-        maxLength: 100
-        minLength: 3
-        name: created_by
-        required: true
-        schema:
-          type: string
+          $ref: '#/definitions/service.CreateTagRequest'
       produces:
       - application/json
       responses:

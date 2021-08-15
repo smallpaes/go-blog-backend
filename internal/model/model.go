@@ -1,6 +1,8 @@
 package model
 
 import (
+	"time"
+
 	"github.com/smallpaes/go-blog-backend/global"
 	"github.com/smallpaes/go-blog-backend/pkg/setting"
 	"gorm.io/driver/mysql"
@@ -42,6 +44,8 @@ func NewDBEngine(databaseSetting *setting.DatabaseSettingS) (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println("init")
+	db.Callback().Create().Before("gorm:create").Register("update_time_stamp", updateTimeStampForCreateCallback)
 
 	sqlDB, err := db.DB()
 	if err != nil {
@@ -50,6 +54,26 @@ func NewDBEngine(databaseSetting *setting.DatabaseSettingS) (*gorm.DB, error) {
 	sqlDB.SetMaxIdleConns(databaseSetting.MaxIdleConns)
 	sqlDB.SetMaxOpenConns(databaseSetting.MaxOpenConns)
 	return db, nil
+}
+
+// Scope contain current operation's information when performing
+// any operation on the database
+func updateTimeStampForCreateCallback(db *gorm.DB) {
+	if db.Error == nil {
+		nowTime := time.Now().Unix()
+		createdTimeField := db.Statement.Schema.LookUpField("CreatedOn")
+		_, isZero := createdTimeField.ValueOf(db.Statement.ReflectValue)
+		if isZero {
+			_ = createdTimeField.Set(db.Statement.ReflectValue, nowTime)
+		}
+
+		modifiedTimeField := db.Statement.Schema.LookUpField("ModifiedOn")
+		_, isZero = modifiedTimeField.ValueOf(db.Statement.ReflectValue)
+		if isZero {
+			fmt.Println(modifiedTimeField, db.Statement.ReflectValue)
+			_ = modifiedTimeField.Set(db.Statement.ReflectValue, nowTime)
+		}
+	}
 }
 
 func loggerLevel(m string) logger.LogLevel {
