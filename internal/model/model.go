@@ -9,17 +9,19 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
+	"gorm.io/plugin/soft_delete"
 
 	"fmt"
 )
 
 type Model struct {
-	ID         uint32         `gorm:"primary_key" json:"id"`
-	CreatedBy  string         `json:"created_by"`
-	ModifiedBy string         `json:"modified_by"`
-	CreatedOn  uint32         `json:"created_on"`
-	ModifiedOn uint32         `json:"modified_on"`
-	DeletedOn  gorm.DeletedAt `json:"deleted_on"`
+	ID         uint32                `gorm:"primary_key" json:"id"`
+	CreatedBy  string                `json:"created_by"`
+	ModifiedBy string                `json:"modified_by"`
+	CreatedOn  uint32                `json:"created_on"`
+	ModifiedOn uint32                `json:"modified_on"`
+	DeletedAt  int                   `json:"deleted_at"`
+	IsDel      soft_delete.DeletedAt `gorm:"softDelete:flag,DeletedAtField:DeletedAt"`
 }
 
 // create db instance with config
@@ -37,6 +39,9 @@ func NewDBEngine(databaseSetting *setting.DatabaseSettingS) (*gorm.DB, error) {
 		Logger: logger.Default.LogMode(loggerLevel(global.ServerSetting.RunMode)),
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true, // use singular table name
+		},
+		NowFunc: func() time.Time {
+			return time.Unix(time.Now().Unix(), 0)
 		},
 	})
 
