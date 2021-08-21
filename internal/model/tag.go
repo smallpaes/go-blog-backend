@@ -27,13 +27,13 @@ func (t Tag) Create(db *gorm.DB) error {
 
 // Update a tag
 func (t Tag) Update(db *gorm.DB) error {
-	db = db.Model(&t).Where("id = ? AND is_del = ?", t.ID, 0)
+	db = db.Model(&t).Where("id = ?", t.ID)
 	return db.Updates(t).Error
 }
 
 // delete a tag
 func (t Tag) Delete(db *gorm.DB) error {
-	return db.Where("id = ? AND is_del = ?", t.Model.ID, 0).Delete(&t).Error
+	return db.Where("id = ?", t.Model.ID, 0).Delete(&t).Error
 }
 
 // Tag count under conditions
@@ -43,7 +43,7 @@ func (t Tag) Count(db *gorm.DB) (int64, error) {
 		db = db.Where("name = ?", t.Name)
 	}
 	db = db.Where("state = ?", t.State)
-	if err := db.Model(&t).Where("is_del = ?", 0).Count(&count).Error; err != nil {
+	if err := db.Model(&t).Count(&count).Error; err != nil {
 		return 0, err
 	}
 	return count, nil
@@ -60,7 +60,7 @@ func (t Tag) List(db *gorm.DB, pageOffset int, pageSize int) ([]*Tag, error) {
 		db = db.Where("name = ?", t.Name)
 	}
 	db = db.Where("state = ?", t.State)
-	if err = db.Where("is_del = ?", 0).Find(&tags).Error; err != nil {
+	if err = db.Find(&tags).Error; err != nil {
 		return nil, err
 	}
 	return tags, nil

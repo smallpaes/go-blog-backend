@@ -115,5 +115,26 @@ func (t Tag) Update(c *gin.Context) {
 // @Failure 500 {object} errcode.Error "Internal error"
 // @Router /api/v1/tags/{id} [delete]
 func (t Tag) Delete(c *gin.Context) {
+	param := service.DeleteTagRequest{
+		ID: convert.StrTo(c.Param("id")).MustUInt32(),
+	}
 
+	response := app.NewResponse(c)
+	valid, errs := app.BindAndValid(c, &param)
+
+	if !valid {
+		global.Logger.WithCallersFrames().Error("app.BindAndValid errs: %v", errs)
+		errRsp := errcode.InvalidParams.WithDetails(errs.Errors()...)
+		response.ToErrorResponse(errRsp)
+		return
+	}
+
+	svc := service.New(c.Request.Context())
+	err := svc.DeleteTag(&param)
+	if err != nil {
+		global.Logger.Errorf("svc.DeleteTag err: %v", err)
+		response.ToErrorResponse(errcode.ErrorDeleteTagFail)
+		return
+	}
+	response.ToResponse(gin.H{})
 }
